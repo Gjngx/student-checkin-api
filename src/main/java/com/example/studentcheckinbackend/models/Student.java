@@ -15,9 +15,9 @@ public class Student {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attendance> attendance;
-    @ManyToOne
-    @JoinColumn(name = "classID")
-    private AClass aClass;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollments> enrollments;
 
     @NotBlank(message = "Vui lòng điền tên sinh viên")
     @Size(max = 10, message = "Tên không quá 10 ký tự")
@@ -45,10 +45,8 @@ public class Student {
 
     public Student(){}
 
-    public Student(Long studentID, List<Attendance> attendance, AClass aClass, String firstName, String lastName, String image, Date dateOfBirth, String address, String email, String phoneNumber) {
+    public Student(Long studentID, String firstName, String lastName, String image, Date dateOfBirth, String address, String email, String phoneNumber) {
         this.studentID = studentID;
-        this.attendance = attendance;
-        this.aClass = aClass;
         this.firstName = firstName;
         this.lastName = lastName;
         this.image = image;
@@ -64,22 +62,6 @@ public class Student {
 
     public void setStudentID(Long studentID) {
         this.studentID = studentID;
-    }
-
-    public List<Attendance> getAttendance() {
-        return attendance;
-    }
-
-    public void setAttendance(List<Attendance> attendance) {
-        this.attendance = attendance;
-    }
-
-    public AClass getaClass() {
-        return aClass;
-    }
-
-    public void setaClass(AClass aClass) {
-        this.aClass = aClass;
     }
 
     public String getFirstName() {
@@ -142,8 +124,6 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "studentID=" + studentID +
-                ", attendance=" + attendance +
-                ", aClass=" + aClass +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", image='" + image + '\'' +

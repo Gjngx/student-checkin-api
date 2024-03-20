@@ -27,7 +27,7 @@ public class AClass {
     private List<Schedule> schedule;
 
     @OneToMany(mappedBy = "aClass", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Student> student;
+    private List<Enrollments> enrollments;
 
     @NotBlank(message = "Vui lòng điền tên lớp học")
     @Column(name = "className")
@@ -41,12 +41,10 @@ public class AClass {
     public AClass() {
     }
 
-    public AClass(Long classID, Teacher teacher, Course course, List<Schedule> schedule, List<Student> student, String className, Long numberOfSessions) {
+    public AClass(Long classID, Teacher teacher, Course course, String className, Long numberOfSessions) {
         this.classID = classID;
         this.teacher = teacher;
         this.course = course;
-        this.schedule = schedule;
-        this.student = student;
         this.className = className;
         this.numberOfSessions = numberOfSessions;
     }
@@ -83,12 +81,12 @@ public class AClass {
         this.schedule = schedule;
     }
 
-    public List<Student> getStudent() {
-        return student;
+    public List<Enrollments> getEnrollments() {
+        return enrollments;
     }
 
-    public void setStudent(List<Student> student) {
-        this.student = student;
+    public void setEnrollments(List<Enrollments> enrollments) {
+        this.enrollments = enrollments;
     }
 
     public String getClassName() {
@@ -114,9 +112,10 @@ public class AClass {
                 ", teacher=" + teacher +
                 ", course=" + course +
                 ", schedule=" + schedule +
-                ", student=" + student +
+                ", enrollments=" + enrollments +
                 ", className='" + className + '\'' +
                 ", numberOfSessions=" + numberOfSessions +
                 '}';
     }
 }
+
