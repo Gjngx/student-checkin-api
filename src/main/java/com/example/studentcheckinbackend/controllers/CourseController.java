@@ -8,6 +8,9 @@ import com.example.studentcheckinbackend.repositories.CourseRepository;
 import com.example.studentcheckinbackend.services.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/api/v1/courses")
 public class CourseController {
@@ -27,8 +31,12 @@ public class CourseController {
         this.courseService = courseService;
     }
     @GetMapping("")
-    public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> courses = courseRepository.findAll();
+    public ResponseEntity<List<Course>> getAllCourses(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> coursesPage = courseRepository.findAll(pageable);
+
+        List<Course> courses = coursesPage.getContent();
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
     @GetMapping("/{id}")
@@ -52,7 +60,7 @@ public class CourseController {
 
         if (!errorMessages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ResponseObject("failed", "Lỗi validation", errorMessages)
+                    new ResponseObject("error", "Lỗi validation", errorMessages)
             );
         }
 

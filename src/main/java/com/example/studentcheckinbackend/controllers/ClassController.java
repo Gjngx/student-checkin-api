@@ -7,6 +7,9 @@ import com.example.studentcheckinbackend.services.CourseService;
 import com.example.studentcheckinbackend.services.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/api/v1/classes")
 public class ClassController {
@@ -32,42 +36,43 @@ public class ClassController {
         this.courseService = courseService;
     }
     @GetMapping("")
-    public ResponseEntity<List<AClassShowDTO>> getAllClass() {
-        List<AClass> classes = classRepository.findAll();
-        List<AClassShowDTO> classShows = new ArrayList<>();
+    public ResponseEntity<List<AClassShowDTO>> getAllClass(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<AClass> classes = classRepository.findAll(pageable).getContent();
 
+        List<AClassShowDTO> classShows = new ArrayList<>();
         for (AClass aClass : classes) {
             AClassShowDTO aClassShow = new AClassShowDTO();
             aClassShow.setAClassID(aClass.getClassID());
             aClassShow.setTeacherID(aClass.getTeacher().getTeacherID());
+            aClassShow.setTeacherName(aClass.getTeacher().getLastName()+ " " + aClass.getTeacher().getFirstName());
             aClassShow.setCourseID(aClass.getCourse().getCourseID());
+            aClassShow.setCourseName(aClass.getCourse().getCourseName());
             aClassShow.setClassName(aClass.getClassName());
             aClassShow.setNumberOfSessions(aClass.getNumberOfSessions());
             classShows.add(aClassShow);
         }
+
         return new ResponseEntity<>(classShows, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> findClassById(@PathVariable Long id){
+    public ResponseEntity<ResponseObject> findClassById(@PathVariable Long id) {
         Optional<AClass> foundClass = classRepository.findById(id);
-        if (foundClass.isPresent()){
+        if (foundClass.isPresent()) {
             AClass aClass = foundClass.get();
-            AClassShowDTO aClassShow = new AClassShowDTO (
-                    aClass.getClassID(),
-                    aClass.getTeacher().getTeacherID(),
-                    aClass.getCourse().getCourseID(),
-                    aClass.getClassName(),
-                    aClass.getNumberOfSessions()
-            );
+            AClassShowDTO aClassShow = classService.createAClassShowDTO(aClass);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("success", "Tìm thấy lớp học với mã:"+ id , aClassShow)
+                    new ResponseObject("success", "Tìm thấy lớp học với mã: " + id , aClassShow)
             );
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Mã lớp học " + id + " Không tồn tại","")
+                    new ResponseObject("failed", "Mã lớp học " + id + " không tồn tại", "")
             );
         }
     }
+
     @PostMapping("")
     public ResponseEntity<ResponseObject> insertClass(@Valid @RequestBody AClassDTO newAClass) {
 

@@ -6,6 +6,9 @@ import com.example.studentcheckinbackend.repositories.TeacherRepository;
 import com.example.studentcheckinbackend.services.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/api/v1/teachers")
 public class TeacherController {
@@ -27,8 +30,12 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
     @GetMapping("")
-    public ResponseEntity<List<Teacher>> getAllTeachers() {
-        List<Teacher> teachers = teacherRepository.findAll();
+    public ResponseEntity<List<Teacher>> getAllTeachers(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Teacher> teacherPage = teacherRepository.findAll(pageable);
+
+        List<Teacher> teachers = teacherPage.getContent();
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
     @GetMapping("/{id}")

@@ -1,7 +1,6 @@
 package com.example.studentcheckinbackend.controllers;
 
 
-import com.example.studentcheckinbackend.models.AClass;
 import com.example.studentcheckinbackend.models.ResponseObject;
 import com.example.studentcheckinbackend.models.Student;
 import com.example.studentcheckinbackend.repositories.StudentRepository;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @CrossOrigin("*")
 @RestController

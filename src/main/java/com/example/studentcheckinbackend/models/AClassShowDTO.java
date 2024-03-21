@@ -6,7 +6,11 @@ public class AClassShowDTO {
 
     private String teacherID;
 
+    private String teacherName;
+
     private String courseID;
+
+    private String courseName;
 
     private String className;
 
@@ -15,10 +19,12 @@ public class AClassShowDTO {
     public AClassShowDTO() {
     }
 
-    public AClassShowDTO(Long AClassID, String teacherID, String courseID, String className, Long numberOfSessions) {
+    public AClassShowDTO(Long AClassID, String teacherID, String teacherName, String courseID, String courseName, String className, Long numberOfSessions) {
         this.AClassID = AClassID;
         this.teacherID = teacherID;
+        this.teacherName = teacherName;
         this.courseID = courseID;
+        this.courseName = courseName;
         this.className = className;
         this.numberOfSessions = numberOfSessions;
     }
@@ -39,12 +45,28 @@ public class AClassShowDTO {
         this.teacherID = teacherID;
     }
 
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     public String getCourseID() {
         return courseID;
     }
 
     public void setCourseID(String courseID) {
         this.courseID = courseID;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getClassName() {
@@ -68,7 +90,9 @@ public class AClassShowDTO {
         return "AClassShowDTO{" +
                 "AClassID=" + AClassID +
                 ", teacherID='" + teacherID + '\'' +
+                ", teacherName='" + teacherName + '\'' +
                 ", courseID='" + courseID + '\'' +
+                ", courseName='" + courseName + '\'' +
                 ", className='" + className + '\'' +
                 ", numberOfSessions=" + numberOfSessions +
                 '}';

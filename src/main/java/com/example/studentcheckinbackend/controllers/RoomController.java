@@ -7,6 +7,9 @@ import com.example.studentcheckinbackend.repositories.RoomRepository;
 import com.example.studentcheckinbackend.services.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/rooms")
 public class RoomController {
@@ -26,8 +30,12 @@ public class RoomController {
         this.roomService = roomService;
     }
     @GetMapping("")
-    public ResponseEntity<List<Room>> getAllRooms(){
-        List<Room> rooms = roomRepository.findAll();
+    public ResponseEntity<List<Room>> getAllRooms(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Room> roomsPage = roomRepository.findAll(pageable);
+
+        List<Room> rooms = roomsPage.getContent();
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
     @GetMapping("/{id}")
@@ -51,7 +59,7 @@ public class RoomController {
 
         if (!errorMessages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ResponseObject("failed", "Lỗi validation", errorMessages)
+                    new ResponseObject("error", "Lỗi validation", errorMessages)
             );
         }
 

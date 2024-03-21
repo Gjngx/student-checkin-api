@@ -1,6 +1,7 @@
 package com.example.studentcheckinbackend.services;
 
 import com.example.studentcheckinbackend.models.AClass;
+import com.example.studentcheckinbackend.models.AClassShowDTO;
 import com.example.studentcheckinbackend.models.Course;
 import com.example.studentcheckinbackend.repositories.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,16 @@ public class ClassService {
     }
     public boolean isClassIdExists(Long classId) {
         return classRepository.existsByClassID(classId);
+    }
+    public AClassShowDTO createAClassShowDTO(AClass aClass) {
+        return new AClassShowDTO(
+                aClass.getClassID(),
+                aClass.getTeacher().getTeacherID(),
+                aClass.getTeacher().getLastName() + " " + aClass.getTeacher().getFirstName(),
+                aClass.getCourse().getCourseID(),
+                aClass.getCourse().getCourseName(),
+                aClass.getClassName(),
+                aClass.getNumberOfSessions()
+        );
     }
 }
